@@ -115,3 +115,9 @@ $$ LANGUAGE plpgsql")]))
 (defn init-data
   [{:keys [self-entity entity] :as rep}]
   (exec-raw (db entity) (get-init-stmt rep) :results))
+
+(defn reset
+  [rep]
+  (let [table (get-table-name rep)]
+    (do-commands rep (<< "TRUNCATE TABLE ~{table}"))
+    (init-data rep)))

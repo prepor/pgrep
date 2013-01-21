@@ -39,6 +39,9 @@
   (db/create-triggers rep)
   (db/init-data rep))
 
+(defn reset-rep
+  [rep]
+  (db/reset rep))
 
 (defn start-rep
   [rep]
