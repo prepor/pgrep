@@ -10,7 +10,7 @@
   [{:keys [self-entity entity] :as rep}]
   (let [table (:table self-entity)
         source-table (:table entity)
-        res (exec-raw (db/db entity) (<< "UPDATE \"~{table}\" SET state = ~{db/IN_SYNC_STATE}, sync_at = now() WHERE state = ~{db/NOT_SYNC_STATE} RETURNING id") :results)
+        res (exec-raw (db/db entity) (<< "UPDATE \"~{table}\" SET state = ~{db/IN_SYNC_STATE}, sync_at = now() WHERE id IN (SELECT id from ~{table} WHERE state = ~{db/NOT_SYNC_STATE} LIMIT ~{CHANGES_LIMIT}) RETURNING id") :results)
         ids (map :id res)
         source-res (select entity (where {(:pk entity) [in ids]}))
         source-res-map (zipmap (map :id source-res) source-res)]

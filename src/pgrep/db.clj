@@ -48,7 +48,7 @@
             id-type (get-id-type entity)]
         (sql/create-table
          table-name
-         [:id id-type]
+         [:id id-type "PRIMARY KEY"]
          [:state :int :default NOT_SYNC_STATE]
          [:sync_at :timestamp])
         (sql/do-commands
@@ -110,7 +110,7 @@ $$ LANGUAGE plpgsql")]))
   [{:keys [entity] :as rep}]
   (let [table (get-table-name rep)
         source-table (:table entity)]
-    (<< "SELECT ~{table}_sync(id) FROM ~{source-table}")))
+    (<< "SELECT count(res) FROM (SELECT ~{table}_sync(id) FROM ~{source-table}) res")))
 
 (defn init-data
   [{:keys [self-entity entity] :as rep}]

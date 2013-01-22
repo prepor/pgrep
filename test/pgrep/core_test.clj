@@ -44,7 +44,7 @@
   (with-db pg
     (sql/create-table
      :videos
-     [:id "varchar(256)" "PRIMARY KEY"]
+     [:id :int "PRIMARY KEY"]
      [:title "varchar(256)"]
      [:duration :int])))
 
@@ -80,13 +80,13 @@
     (reset-database)
     (test-table)
     (testing "Init data should be replicated"
-      (insert videos (values [{:id "mail/1" :title "madonna burning up" :duration 100}
-                              {:id "mail/2" :title "bumer" :duration 500}]))
+      (insert videos (values [{:id 1 :title "madonna burning up" :duration 100}
+                              {:id 2 :title "bumer" :duration 500}]))
       (init-rep videos-rep)
-      (is (= #{"mail/1" "mail/2"} (select-ids))))
+      (is (= #{1 2} (select-ids))))
     (testing "New data should be replicated"
-      (insert videos (values {:id "mail/3" :title "hoho!" :duration 300}))
-      (is (= #{"mail/1" "mail/2" "mail/3"} (select-ids))))))
+      (insert videos (values {:id 3 :title "hoho!" :duration 300}))
+      (is (= #{1 2 3} (select-ids))))))
 
 (deftest reset-rep-t
   (letfn [(count-videos-rep [] (-> (select (:self-entity videos-rep) (aggregate (count :*) :cnt))
@@ -95,8 +95,8 @@
     (reset-database)
     (test-table)
     (init-rep videos-rep)
-    (insert videos (values [{:id "mail/1" :title "madonna burning up" :duration 100}
-                            {:id "mail/2" :title "bumer" :duration 500}]))
+    (insert videos (values [{:id 1 :title "madonna burning up" :duration 100}
+                            {:id 2 :title "bumer" :duration 500}]))
     (is (= 2 (count-videos-rep)))
     (delete (:self-entity videos-rep))
     (is (= 0 (count-videos-rep)))

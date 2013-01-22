@@ -10,7 +10,7 @@
 
 (deftest get-id-type-t
   (let [type (get-id-type core/videos)]
-    (is (= "varchar(256)" type))))
+    (is (= :int type))))
 
 (deftest get-table-name-t
   (is (= "videos_pgrep_videos_rep" (get-table-name core/videos-rep))))
@@ -20,6 +20,6 @@
   (let [columns-seq (select columns (where {:table_name (get-table-name core/videos-rep)}))
         columns (zipmap (map (comp keyword :column_name) columns-seq) columns-seq)]
     (are [n udt_name] (= (get-in columns [n :udt_name]) udt_name)
-         :id  "varchar"
+         :id  "int4"
          :state "int4"
          :sync_at "timestamp")))
