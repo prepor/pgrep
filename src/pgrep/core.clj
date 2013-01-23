@@ -49,4 +49,4 @@
 
 (defn start-rep-cleaner
   [rep]
-  (handler/rep-cleaner-loop))
+  (handler/rep-cleaner-loop rep))

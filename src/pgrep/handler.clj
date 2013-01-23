@@ -18,7 +18,7 @@
 
 (defn in-sync
   [{:keys [self-entity]} changes]
-  (delete self-entity (where {:id [in (keys changes) :state db/IN_SYNC_STATE]})))
+  (delete self-entity (where {:id [in (keys changes)] :state db/IN_SYNC_STATE})))
 
 (defn handle-change
   [rep [id row]]
